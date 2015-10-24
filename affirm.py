@@ -1,11 +1,36 @@
 
 import random
 
-# this gets a bash alias, so I can just type "affirm" in the terminal
-# TODO: take a number as an argument, return that many affirmations
+# TODO: return affirmations containing a category tagged somehow
 
-# TODO: take a string as an argument, return affirmations containing
-# that string, or having that category tagged somehow
+
+# I don't like doing the extra function for a simple check,
+# but it's multi-step so oh well.
+
+import argparse
+parser = argparse.ArgumentParser(description="Give me some affirmations.")
+
+# I must use nargs ? to make optional positional arguments, (could also use *)
+parser.add_argument('qty',
+        metavar="#",
+        type=int,
+        nargs='?',
+        help='number of affirmations to output',
+        default=1)
+
+parser.add_argument('-f', '--search',
+        type=str,
+        nargs='?',
+        help='string contained in affirmation',
+        default=None)
+
+args = parser.parse_args()
+
+def substr_found(haystack):
+    if (haystack.lower().find(args.search) < 0):
+        return False
+    else:
+        return True
 
 affirmations = ["I love you",
     "You're great",
@@ -105,6 +130,21 @@ affirmations = ["I love you",
     "You brighten my day",
     "Super job"]
 
-print ""
-print random.choice(affirmations)
-print ""
+if (args.search != None):
+    affirmations = filter(substr_found, affirmations)
+
+
+
+if (affirmations != []):
+    idx = 0
+    print ""
+    while (idx < args.qty):
+        print random.choice(affirmations)
+        idx += 1
+    print ""
+else:
+    print "Woops! No matches found."
+
+
+
+# TODO: write some tests for practice
